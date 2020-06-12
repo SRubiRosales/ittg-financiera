@@ -29,13 +29,20 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
+                    @auth
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
                             <a class="nav-link" href="{{ route('clients.index') }}">
                                 {{ __('Clients') }}
                             </a>
                         </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="{{ route('loans.index') }}">
+                                {{ __('Loans') }}
+                            </a>
+                        </li>
                     </ul>
+                    @endauth
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -74,7 +81,9 @@
         </nav>
 
         <main class="py-4">
-            @yield('content')
+            <div class="container">
+                @yield('content')
+            </div>
         </main>
     </div>
     

@@ -7,52 +7,42 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h3 class="mb-0">Clientes</h3>
-                    </div>
-                    <div>
-                        <a href="{{ route('clients.export.excel') }}" class="btn btn-success">
-                            {{ __('Export Clients')}}
-                        </a>
-                        <a href="{{ route('clients.create') }}" class="btn btn-primary">
-                            {{ __('New Client')}}
-                        </a>
+                        <h3 class="mb-0">Pagos</h3>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                @if($clients->count())
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">{{ __('Name') }}</th>
-                            <th scope="col">{{ __('Phone') }}</th>
-                            <th scope="col" style="width: 250px">{{ __('Actions') }}</th>
+                            <th scope="col">{{ __('Client') }}</th>
+                            <th scope="col">{{ __('Payment Number')}}</th>
+                            <th scope="col">{{ __('Amount') }}</th>
+                            <th scope="col">{{ __('Date payment') }}</th>
+                            <th scope="col">{{ __('Received amount') }}</th>
+                            <th scope="col" style="width: 150px">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($clients as $client)
+                        @foreach ($payments as $item)
                         <tr>
-                            <td scope="row">{{ $client->id }}</td>
-                            <td>{{ $client->name }}</td>
-                            <td>{{ $client->phone }}</td>
+                            <td scope="row">{{ $item->id }}</td>
+                            <td>{{ $item->loan_id }}</td>
+                            <td>{{ $item->payment_number}}</td>
+                            <td>${{ $item->amount }}</td>
+                            <td>{{ $item->date_payment }}</td>
+                            <td>${{ $item->received_amount }}</td>
                             <td>
-                                <a href="{{ route('clients.show', $client->id) }}" class="btn btn-outline-secondary btn-sm">
-                                    {{ __('Show') }}
+                                <a href="" class="btn btn-outline-secondary btn-sm">
+                                    Show
                                 </a>
-                                <a href="{{ route('loans.create', $client->id) }}" class="btn btn-outline-info btn-sm">
-                                    {{ __('New Loan') }}
-                                </a>
-                                <button class="btn btn-outline-danger btn-sm btn-delete" data-id="{{ $client->id }}">{{ __('Delete') }}</button>
+                                <button class="btn btn-outline-danger btn-sm btn-delete" data-id="{{ $item->id }}">Delete</button>
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-                {!! $clients->render() !!}
-                @else
-                <b>{{ __('No hay ningún cliente registrado')}}</b>
-                @endif
             </div>
         </div>
     </div>
@@ -74,14 +64,14 @@
         })
         .then((result) => {
             if (result.value) {
-                axios.delete('{{ route('clients.index') }}/' + id)
+                axios.delete('{{ route('payments.index') }}/' + id)
                     .then(result => {
                         Swal.fire({
                             title: 'Borrado',
-                            text: 'El cliente a sido borrado',
+                            text: 'El préstamos ha sido borrado',
                             icon: 'success'
                         }).then(() => {
-                            window.location.href='{{ route('clients.index') }}';
+                            window.location.href='{{ route('payments.index') }}';
                         });
                     })
                     .catch(error => {

@@ -10,7 +10,8 @@
             <!-- <v-list-item-icon>
                 <v-icon>mdi-home</v-icon>
             </v-list-item-icon> -->
-            <v-list-item-title>About</v-list-item-title>
+            <v-list-item-title>Clientes</v-list-item-title>
+            <v-list-item-title>Préstamos</v-list-item-title>
         </v-list-item>
     </v-list>
 </template>

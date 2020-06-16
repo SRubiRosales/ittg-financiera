@@ -35,12 +35,12 @@ const router = new VueRouter({
         }
     ]
 });
-
+/*
 router.beforeEach((to, from, next) => {
     const isAuthenticated = store.state.isAuthenticated;
     if (to.name !== 'login' && !isAuthenticated) next({ name: 'login'});
     else if (to.name === 'login' && isAuthenticated) next({ name: 'home' });
     else next();
-});
+});*/
 
 export default router;

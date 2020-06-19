@@ -50,6 +50,7 @@ class ClientsController extends Controller
 
     public function destroy($id)
     {
+        $loans = DB::table('loans')->where('client_id', '=', $id)->delete();
         $client = Client::find($id);
         $client->delete();
         return response()->json(['client' => $client], 200);

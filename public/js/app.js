@@ -2224,6 +2224,310 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Loans.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Loans.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      dialog: false,
+      loading: false,
+      search: '',
+      clients: [],
+      headers: [{
+        text: '#',
+        align: 'start',
+        sortable: false,
+        value: 'id'
+      }, {
+        text: 'Nombre',
+        value: 'client',
+        sortable: true
+      }, {
+        text: 'Cantidad Prestada',
+        value: 'amount'
+      }, {
+        text: 'Total a pagar',
+        value: 'total'
+      }, {
+        text: 'Fecha de Ministración',
+        value: 'ministering_date'
+      }, {
+        text: 'Acciones',
+        value: 'actions',
+        sortable: false
+      }],
+      loans: [],
+      editedIndex: -1,
+      editedItem: {
+        id: '',
+        client_id: '',
+        amount: '',
+        payments_n: '',
+        quota: '',
+        total: '',
+        ministering_date: '',
+        due_date: ''
+      },
+      defaultItem: {
+        id: '',
+        client_id: '',
+        amount: '',
+        payments_n: '',
+        quota: '',
+        total: '',
+        ministering_date: '',
+        due_date: ''
+      }
+    };
+  },
+  computed: {
+    formTitle: function formTitle() {
+      return this.editedIndex === -1 ? 'Nuevo Préstamo' : 'Editar Préstamo';
+    }
+  },
+  watch: {
+    dialog: function dialog(val) {
+      val || this.close();
+    }
+  },
+  created: function created() {
+    this.initialize();
+  },
+  methods: {
+    /*paginate(e){
+      axios.get('/api/loans?page')
+    },*/
+    initialize: function initialize() {
+      var _this = this;
+
+      axios.interceptors.request.use(function (config) {
+        _this.loading = true;
+        return config;
+      }, function (error) {
+        _this.loading = false;
+        return Promise.reject(error);
+      });
+      axios.interceptors.response.use(function (response) {
+        _this.loading = false;
+        return response;
+      }, function (error) {
+        _this.loading = false;
+        return Promise.reject(error);
+      });
+      axios.get('/api/loans', {}).then(function (res) {
+        _this.loans = res.data.loans, _this.clients = res.data.clients;
+      });
+    },
+    editItem: function editItem(item) {
+      this.editedIndex = this.loans.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+    deleteItem: function deleteItem(item) {
+      var _this2 = this;
+
+      var index = this.loans.indexOf(item);
+      var decide = confirm('¿Confirma que desea eliminar este préstamo?');
+
+      if (decide) {
+        axios["delete"]('/api/loans/' + item.id).then(function (res) {
+          _this2.loans.splice(index, 1);
+        })["catch"](function (err) {
+          return console.log(err.response);
+        });
+      }
+    },
+    close: function close() {
+      var _this3 = this;
+
+      this.dialog = false;
+      setTimeout(function () {
+        _this3.editedItem = Object.assign({}, _this3.defaultItem);
+        _this3.editedIndex = -1;
+      }, 300);
+    },
+    save: function save() {
+      var _this4 = this;
+
+      if (this.editedIndex > -1) {
+        axios.put('/api/loans/' + this.editedItem.id, {
+          'client': this.editedItem.client,
+          'amount': this.editedItem.amount,
+          'payments_n': this.editedItem.payments_n,
+          'quota': this.editedItem.quota //'total': this.editedItem.total,
+          //'ministering_date': this.editedItem.ministering_date
+
+        }).then(function (res) {
+          return Object.assign(_this4.loans[_this4.editedIndex], res.data.loan);
+        })["catch"](function (err) {
+          return console.log(err.response);
+        });
+      } else {
+        axios.post('/api/loans', {
+          'client': this.editedItem.client,
+          'amount': this.editedItem.amount,
+          'payments_n': this.editedItem.payments_n,
+          'quota': this.editedItem.quota
+        }).then(function (res) {
+          return _this4.loans.push(res.data.loan);
+        })["catch"](function (err) {
+          return console.dir(err.response);
+        });
+      }
+
+      this.close();
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/LoginPage.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/LoginPage.vue?vue&type=script&lang=js& ***!
@@ -21850,7 +22154,411 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("Préstamos")])
+  return _c("v-data-table", {
+    staticClass: "elevation-1",
+    attrs: {
+      loading: _vm.loading,
+      "loading-text": "Cargando datos...",
+      headers: _vm.headers,
+      items: _vm.loans,
+      "sort-by": "id"
+    },
+    scopedSlots: _vm._u([
+      {
+        key: "top",
+        fn: function() {
+          return [
+            _c(
+              "v-card",
+              { attrs: { flat: "", color: "teal lighten-3" } },
+              [
+                _c(
+                  "v-card-title",
+                  [
+                    _vm._v("\n        Préstamos\n        "),
+                    _c("v-spacer"),
+                    _vm._v(" "),
+                    _c("v-text-field", {
+                      attrs: {
+                        color: "teal",
+                        "append-icon": "mdi-magnify",
+                        label: "Buscar",
+                        "single-line": "",
+                        "hide-details": ""
+                      },
+                      model: {
+                        value: _vm.search,
+                        callback: function($$v) {
+                          _vm.search = $$v
+                        },
+                        expression: "search"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-card",
+                  { staticClass: "d-flex flex-row-reverse mx-auto" },
+                  [
+                    _c("v-dialog", {
+                      attrs: {
+                        scrollable: "",
+                        fullscreen: "",
+                        persistent: "",
+                        overlay: false,
+                        "max-width": "500px",
+                        transition: "dialog-transition"
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "activator",
+                          fn: function(ref) {
+                            var on = ref.on
+                            var attrs = ref.attrs
+                            return [
+                              _c(
+                                "v-btn",
+                                _vm._g(
+                                  _vm._b(
+                                    {
+                                      staticClass: "mb-1 white--text",
+                                      attrs: {
+                                        right: "",
+                                        color: "teal darken-3",
+                                        fab: ""
+                                      }
+                                    },
+                                    "v-btn",
+                                    attrs,
+                                    false
+                                  ),
+                                  on
+                                ),
+                                [
+                                  _c("v-icon", { attrs: { dark: "" } }, [
+                                    _vm._v("mdi-file-excel")
+                                  ])
+                                ],
+                                1
+                              )
+                            ]
+                          }
+                        }
+                      ]),
+                      model: {
+                        value: _vm.dialog,
+                        callback: function($$v) {
+                          _vm.dialog = $$v
+                        },
+                        expression: "dialog"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "v-dialog",
+                      {
+                        attrs: { "max-width": "500px" },
+                        scopedSlots: _vm._u([
+                          {
+                            key: "activator",
+                            fn: function(ref) {
+                              var on = ref.on
+                              var attrs = ref.attrs
+                              return [
+                                _c(
+                                  "v-btn",
+                                  _vm._g(
+                                    _vm._b(
+                                      {
+                                        staticClass: "mb-1 white--text",
+                                        attrs: {
+                                          right: "",
+                                          color: "teal darken-3",
+                                          fab: ""
+                                        }
+                                      },
+                                      "v-btn",
+                                      attrs,
+                                      false
+                                    ),
+                                    on
+                                  ),
+                                  [
+                                    _c("v-icon", { attrs: { dark: "" } }, [
+                                      _vm._v("mdi-account-cash")
+                                    ])
+                                  ],
+                                  1
+                                )
+                              ]
+                            }
+                          }
+                        ]),
+                        model: {
+                          value: _vm.dialog,
+                          callback: function($$v) {
+                            _vm.dialog = $$v
+                          },
+                          expression: "dialog"
+                        }
+                      },
+                      [
+                        _vm._v(" "),
+                        _c(
+                          "v-card",
+                          [
+                            _c("v-card-title", [
+                              _c("span", { staticClass: "headline" }, [
+                                _vm._v(_vm._s(_vm.formTitle))
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "v-card-text",
+                              [
+                                _c(
+                                  "v-container",
+                                  [
+                                    _c(
+                                      "v-row",
+                                      [
+                                        _c(
+                                          "v-col",
+                                          {
+                                            staticClass: "d-flex",
+                                            attrs: { cols: "12", sm: "12" }
+                                          },
+                                          [
+                                            _c("v-autocomplete", {
+                                              attrs: {
+                                                color: "teal",
+                                                items: _vm.clients,
+                                                label: "Cliente",
+                                                outlined: "",
+                                                "prepend-icon": "mdi-account",
+                                                required: ""
+                                              },
+                                              model: {
+                                                value: _vm.editedItem.client,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.editedItem,
+                                                    "client",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression: "editedItem.client"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-col",
+                                          {
+                                            staticClass: "d-flex",
+                                            attrs: { cols: "12", sm: "12" }
+                                          },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "teal",
+                                                outlined: "",
+                                                label: "Cantidad",
+                                                type: "number",
+                                                "prepend-icon":
+                                                  "mdi-currency-usd",
+                                                required: ""
+                                              },
+                                              model: {
+                                                value: _vm.editedItem.amount,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.editedItem,
+                                                    "amount",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression: "editedItem.amount"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-col",
+                                          {
+                                            staticClass: "d-flex",
+                                            attrs: { cols: "12", sm: "12" }
+                                          },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "teal",
+                                                outlined: "",
+                                                label: "Número de pagos",
+                                                type: "number",
+                                                "prepend-icon": "mdi-pound-box",
+                                                required: ""
+                                              },
+                                              model: {
+                                                value:
+                                                  _vm.editedItem.payments_n,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.editedItem,
+                                                    "payments_n",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression:
+                                                  "editedItem.payments_n"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-col",
+                                          {
+                                            staticClass: "d-flex",
+                                            attrs: { cols: "12", sm: "12" }
+                                          },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "teal",
+                                                outlined: "",
+                                                label: "Cuota",
+                                                type: "number",
+                                                "prepend-icon":
+                                                  "mdi-currency-usd",
+                                                required: ""
+                                              },
+                                              model: {
+                                                value: _vm.editedItem.quota,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.editedItem,
+                                                    "quota",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression: "editedItem.quota"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-card-actions",
+                              [
+                                _c("v-spacer"),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "teal darken-1", text: "" },
+                                    on: { click: _vm.close }
+                                  },
+                                  [_vm._v("Cancelar")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: {
+                                      type: "submit",
+                                      color: "teal darken-1",
+                                      text: ""
+                                    },
+                                    on: { click: _vm.save }
+                                  },
+                                  [_vm._v("Guardar")]
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ]
+        },
+        proxy: true
+      },
+      {
+        key: "item.actions",
+        fn: function(ref) {
+          var item = ref.item
+          return [
+            _c(
+              "v-icon",
+              {
+                staticClass: "mr-2",
+                attrs: { small: "" },
+                on: {
+                  click: function($event) {
+                    return _vm.editItem(item)
+                  }
+                }
+              },
+              [_vm._v("mdi-pencil")]
+            ),
+            _vm._v(" "),
+            _c(
+              "v-icon",
+              {
+                attrs: { small: "" },
+                on: {
+                  click: function($event) {
+                    return _vm.deleteItem(item)
+                  }
+                }
+              },
+              [_vm._v("mdi-delete")]
+            )
+          ]
+        }
+      },
+      {
+        key: "no-data",
+        fn: function() {
+          return [
+            _c(
+              "v-btn",
+              { attrs: { color: "teal" }, on: { click: _vm.initialize } },
+              [_vm._v("Reset")]
+            )
+          ]
+        },
+        proxy: true
+      }
+    ])
+  })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -21948,6 +22656,30 @@ var render = function() {
     ],
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Payments.vue?vue&type=template&id=04c873d0&":
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Payments.vue?vue&type=template&id=04c873d0& ***!
+  \***********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [_vm._v("Pagos")])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -80447,15 +81179,17 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Loans_vue_vue_type_template_id_3745d8a8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Loans.vue?vue&type=template&id=3745d8a8& */ "./resources/js/components/Loans.vue?vue&type=template&id=3745d8a8&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _Loans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Loans.vue?vue&type=script&lang=js& */ "./resources/js/components/Loans.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
-var script = {}
+
+
 
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
-  script,
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Loans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _Loans_vue_vue_type_template_id_3745d8a8___WEBPACK_IMPORTED_MODULE_0__["render"],
   _Loans_vue_vue_type_template_id_3745d8a8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
@@ -80469,6 +81203,20 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 if (false) { var api; }
 component.options.__file = "resources/js/components/Loans.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Loans.vue?vue&type=script&lang=js&":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/Loans.vue?vue&type=script&lang=js& ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Loans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Loans.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Loans.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Loans_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -80538,6 +81286,59 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Navigation_vue_vue_type_template_id_d456e682___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Navigation_vue_vue_type_template_id_d456e682___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Payments.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/components/Payments.vue ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Payments_vue_vue_type_template_id_04c873d0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Payments.vue?vue&type=template&id=04c873d0& */ "./resources/js/components/Payments.vue?vue&type=template&id=04c873d0&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
+  _Payments_vue_vue_type_template_id_04c873d0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Payments_vue_vue_type_template_id_04c873d0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Payments.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Payments.vue?vue&type=template&id=04c873d0&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/Payments.vue?vue&type=template&id=04c873d0& ***!
+  \*****************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Payments_vue_vue_type_template_id_04c873d0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Payments.vue?vue&type=template&id=04c873d0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Payments.vue?vue&type=template&id=04c873d0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Payments_vue_vue_type_template_id_04c873d0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Payments_vue_vue_type_template_id_04c873d0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -80661,8 +81462,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_components_About__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/js/components/About */ "./resources/js/components/About.vue");
 /* harmony import */ var _js_components_Clients__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/js/components/Clients */ "./resources/js/components/Clients.vue");
 /* harmony import */ var _js_components_Loans__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/js/components/Loans */ "./resources/js/components/Loans.vue");
-/* harmony import */ var _js_pages_LoginPage__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/js/pages/LoginPage */ "./resources/js/pages/LoginPage.vue");
-/* harmony import */ var _js_views_View__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/js/views/View */ "./resources/js/views/View.vue");
+/* harmony import */ var _js_components_Payments__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/js/components/Payments */ "./resources/js/components/Payments.vue");
+/* harmony import */ var _js_pages_LoginPage__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/js/pages/LoginPage */ "./resources/js/pages/LoginPage.vue");
+/* harmony import */ var _js_views_View__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/js/views/View */ "./resources/js/views/View.vue");
+
 
 
 
@@ -80677,7 +81480,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   mode: 'history',
   routes: [{
     path: '',
-    component: _js_views_View__WEBPACK_IMPORTED_MODULE_8__["default"],
+    component: _js_views_View__WEBPACK_IMPORTED_MODULE_9__["default"],
     children: [{
       path: '/',
       name: 'home',
@@ -80694,11 +81497,15 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
       path: '/loans',
       name: 'loans',
       component: _js_components_Loans__WEBPACK_IMPORTED_MODULE_6__["default"]
+    }, {
+      path: '/payments',
+      name: 'payments',
+      component: _js_components_Payments__WEBPACK_IMPORTED_MODULE_7__["default"]
     }]
   }, {
     path: '/login',
     name: 'login',
-    component: _js_pages_LoginPage__WEBPACK_IMPORTED_MODULE_7__["default"]
+    component: _js_pages_LoginPage__WEBPACK_IMPORTED_MODULE_8__["default"]
   }]
 });
 router.beforeEach(function (to, from, next) {

@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::resource('clients', 'ClientsController');
+    Route::resource('loans', 'LoansController');
+    Route::resource('payments', 'PaymentsController')->only(['index', 'show']);
     Route::get('export-client-excel', 'ClientsController@exportExcel')->name('clients.export.excel');
     Route::post('import-client-excel', 'ClientsController@importExcel')->name('clients.import.excel');
 });

@@ -160,8 +160,7 @@
             this.clients.splice(index, 1)
             })
             .catch(err => console.log(err.response))
-        }
-        
+        }        
       },
 
       close () {

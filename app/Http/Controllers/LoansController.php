@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use App\Exports\SummaryExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -22,29 +23,17 @@ class LoansController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $loans = Loan::join('clients', 'loans.client_id', '=', 'clients.id')
                     ->select('loans.*', 'clients.name as client')
                     ->get();
-        $payments = DB::table('payments')->select('loan_id', 'received_amount')->get();
-        
-        return view('loans.index', [
-            'loans' => $loans,
-            'payments' => $payments,
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create($client_id)
-    {
         //$clients = DB::table('clients') -> select ('id','name') -> get();
-        $client = DB::table('clients') -> select ('id','name') -> where('id', '=', $client_id)->first();
-        return view('loans.create', compact('client'));
+        return response()->json([
+            'loans' => $loans,
+            'clients' => Client::pluck('name')->all()
+            ],
+            200);
     }
 
     /**
@@ -55,33 +44,24 @@ class LoansController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'client_id'  => 'required',
-            'amount' => 'required',
-            'payments_n' => 'required',
-            'quota' => 'required',
-            'total' => 'required',
-            'ministering_date' => 'required',
-            //'due_date' => 'required',
-        ]);
         //Calcula fecha de vencimiento a partir del número de pagos (1 pago por semana)
-        $ministering = $request->input('ministering_date');
-        $payments = $request->input('payments_n');
+        $client_id = Client::where('name', $request->client)->first();
+        $ministering = Carbon::now()->toDateString();
+        $payments = $request->payments_n;
+        $quota = $request->quota;
+        $total = $payments * $quota;
         $due_date = Carbon::parse($ministering)->addWeeks($payments);
-
-        Loan::create([
-            'client_id'  => $request->input('client_id'),
-            'payments_n' => $request->input('payments_n'),
-            'amount' => $request->input('amount'),
-            'quota' => $request->input('quota'),
-            'total' => $request->input('total'),
-            'ministering_date' => $request->input('ministering_date'),
+        $loan = Loan::create([
+            'client_id'  => $client_id->id,
+            'payments_n' => $request->payments_n,
+            'amount' => $request->amount,
+            'quota' => $quota,
+            'total' => $total,
+            'ministering_date' => $ministering,
             'due_date' => $due_date,
-            //'due_date' => $request->input('due_date'),
             'finished' => false,
         ]);
-
-        return redirect()->route('loans.index')->with('success','Préstamos otorgado correctamente');
+        return response()->json(['loan' => $loan], 200);
     }
 
     /**
@@ -97,27 +77,9 @@ class LoansController extends Controller
                     ->where('loans.id', '=', $id)
                     ->first();
         $payment = DB::table('payments')->select('received_amount')->where('loan_id', '=', $loan->id)->sum('received_amount');
-        
-        return view('loans.show', ['loan' => $loan, 'payment' => $payment]);
+        return response()->json(['loan' => $loan, 'payment' => $payment], 200);
     }
-
     
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $loan = Loan::join('clients', 'loans.client_id', '=', 'clients.id')
-                    ->select('loans.*', 'clients.name as client')
-                    ->where('loans.id', '=', $id)
-                    ->first();
-        return view('loans.edit', ['loan' => $loan]);
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -127,24 +89,31 @@ class LoansController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->validate([
-            'client_id'  => 'required',
-            'amount' => 'required',
-            'payments_n' => 'required',
-            'quota' => 'required',
-            'total' => 'required',
-            'ministering_date' => 'required',
-            'due_date' => 'required',
-        ]);
-        Loan::whereId($id)->update($data);
-        return redirect('/loans')->with('success', 'Loan data is successfully updated');
+        $loan = Loan::find($id);
+        $client_id = Client::where('name', $request->client)->first();
+        
+        $payments = $request->payments_n;
+        $quota = $request->quota;
+        $total = $payments * $quota;
+        $ministering = Carbon::now()->toDateString();
+        $due_date = Carbon::parse($ministering)->addWeeks($payments);
+
+        $loan->client_id = $client_id->id;
+        $loan->amount = $request->amount;
+        $loan->payments_n = $payments;
+        $loan->quota = $quota;
+        $loan->total = $total;
+        $loan->ministering_date = $ministering;
+        $loan->due_date = $due_date;
+        $loan->finished = false;
+        $loan->save();
+        return response()->json(['loan' => $loan], 200);
     }
 
     public function status($id)
     {
         Loan::whereId($id)->update(['finished' => 1]);
-        //Loan::whereId($id)->update($data);
-        return redirect()->route('loans.show', $id);
+        return response()->json(['loan' => $loan], 200);
     }
 
     /**
@@ -155,6 +124,7 @@ class LoansController extends Controller
      */
     public function destroy($id)
     {
+        $payments = DB::table('payments')->where('loan_id', '=', $id)->delete();
         $loan = Loan::find($id);
         $loan->delete();
         return $loan;

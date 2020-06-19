@@ -2,12 +2,13 @@
     <v-row align="center" justify="center">
         <v-col col="12" md="4" sm="6">
             <v-card>
-                <v-card-title>Login</v-card-title>
+                <v-card-title>Iniciar Sesión</v-card-title>
                 <v-card-text>
                     <v-text-field
                         prepend-icon="mdi-account"
                         v-model="credentials.email"
-                        label="Correo Electrónico">
+                        label="Correo Electrónico"
+                        required>
                     </v-text-field>
                     <v-text-field
                         label="Contraseña"
@@ -16,12 +17,13 @@
                         :append-icon="showPassword ? 'mdi-eye': 'mdi-eye-off'"
                         :type="showPassword ? 'text': 'password'"
                         @click:append="showPassword = !showPassword"
+                        required
                         >
                     </v-text-field>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" @click="login" text>Ingresar</v-btn>
+                    <v-btn block color="teal" @click="login" text>Ingresar</v-btn>
                 </v-card-actions>
             </v-card>
             <v-snackbar

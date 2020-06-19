@@ -1,14 +1,11 @@
 <template>
     <v-app>
-        <v-navigation-drawer app color="primary" absolute :value="drawerOpen" dark>
+        <v-navigation-drawer v-model="drawer" app clipped>
             <navigation></navigation>
         </v-navigation-drawer>
-
-        <v-app-bar app color="yellow">
-            <v-app-bar-nav-icon @click="drawerToggle"></v-app-bar-nav-icon>
-            <v-toolbar-title>
-                Financiera
-            </v-toolbar-title>
+        <v-app-bar app clipped-bar color="teal" dense>
+            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-toolbar-title>Financiera S.A.</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-menu offset-y>
                 <template v-slot:activator="{ on }">
@@ -28,35 +25,36 @@
                     </v-list-item>
                 </v-list>
             </v-menu>
-        </v-app-bar>
-
-        <v-content>
-            <v-container fluid>
-                <router-view></router-view>
-            </v-container>
-        </v-content>
-        <v-footer app></v-footer>
-    </v-app>
+    </v-app-bar>
+    <v-content>
+        <v-container fluid>
+            <router-view></router-view>
+        </v-container>
+    </v-content>
+    <v-footer color="teal" app>
+      <span class="white--text">&copy; 2020</span>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
 import Navigation from '@/js/components/Navigation';
 export default {
+    props: {
+        source: String,
+    },
+    data: () => ({
+        drawer: null,
+    }),
     components: {
         navigation: Navigation
     },
     computed: {
-        drawerOpen () {
-            return this.$store.state.drawerOpen;
-        },
         user () {
             return this.$store.state.user || { name: '' };
         }
     },
     methods: {
-        drawerToggle () {
-            this.$store.dispatch('drawerToggle');
-        },
         async logout() {
             await this.$store.dispatch('logout');
             this.$router.push('/login');

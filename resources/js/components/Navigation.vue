@@ -1,16 +1,36 @@
 <template>
-    <v-list>
-        <v-list-item dark to="/">
-            <v-list-item-icon>
-                <v-icon>mdi-vpn-key</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Login</v-list-item-title>
-        </v-list-item>
-        <v-list-item dark to="/about">
-            <!-- <v-list-item-icon>
-                <v-icon>mdi-home</v-icon>
-            </v-list-item-icon> -->
-            <v-list-item-title>About</v-list-item-title>
-        </v-list-item>
-    </v-list>
+  <v-list dense>
+    <v-list-item link to="/">
+      <v-list-item-action>
+        <v-icon>mdi-home</v-icon>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title>Inicio</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item link to="/about">
+      <v-list-item-action>
+        <v-icon>mdi-information</v-icon>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title>Acerca de</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item link to="/clients">
+      <v-list-item-action>
+        <v-icon>mdi-account-box</v-icon>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title>Clientes</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item link to="/loans">
+      <v-list-item-action>
+        <v-icon>mdi-cash-usd</v-icon>
+      </v-list-item-action>
+      <v-list-item-content>
+        <v-list-item-title>Préstamos</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
 </template>

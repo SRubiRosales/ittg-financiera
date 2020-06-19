@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::resource('clients', 'ClientsController');
+    Route::get('export-client-excel', 'ClientsController@exportExcel')->name('clients.export.excel');
+    Route::post('import-client-excel', 'ClientsController@importExcel')->name('clients.import.excel');
+});

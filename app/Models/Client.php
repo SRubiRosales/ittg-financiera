@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    protected $fillable = [
-        'name', 'phone', 'address',
-    ];
+    protected $guarded = [];
+
+    public function loans()
+    {
+        return $this->hasMany('App\Models\Loan');
+    }
 }

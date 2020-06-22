@@ -5,19 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Loan;
 use App\Models\Client;
 use Illuminate\Http\Request;
-use App\Exports\SummaryExport;
-use Maatwebsite\Excel\Facades\Excel;
 use DB;
 use Carbon\Carbon;
 
 class LoansController extends Controller
-{
-    //Resumen de préstamos
-    public function export() 
-    {
-        return Excel::download(new SummaryExport, 'resumenPagos.xlsx');
-    }
-    
+{   
     /**
      * Display a listing of the resource.
      *
@@ -61,7 +53,8 @@ class LoansController extends Controller
             'due_date' => $due_date,
             'finished' => false,
         ]);
-        return response()->json(['loan' => $loan], 200);
+        app(PaymentsController::class)->store($loan->id, $payments, $quota, 0);
+        return response()->json(['loan' => $loan, 'client' => $request->client], 200);
     }
 
     /**
@@ -107,13 +100,16 @@ class LoansController extends Controller
         $loan->due_date = $due_date;
         $loan->finished = false;
         $loan->save();
+        $pagos = DB::table('payments')->select()->where('loan_id', '=', $loan->id);
+        $paid = DB::table('payments')->select('received_amount')->where('loan_id', '=', $loan->id)->sum('received_amount');
+        $pagos->delete();
+        app(PaymentsController::class)->store($loan->id, $payments, $quota, $paid);
         return response()->json(['loan' => $loan], 200);
     }
 
     public function status($id)
     {
         Loan::whereId($id)->update(['finished' => 1]);
-        return response()->json(['loan' => $loan], 200);
     }
 
     /**
@@ -127,6 +123,6 @@ class LoansController extends Controller
         $payments = DB::table('payments')->where('loan_id', '=', $id)->delete();
         $loan = Loan::find($id);
         $loan->delete();
-        return $loan;
+        return response()->json(['loan' => $loan], 200);
     }
 }

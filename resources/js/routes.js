@@ -7,6 +7,7 @@ import About from '@/js/components/About';
 import Clients from '@/js/components/Clients';
 import Loans from '@/js/components/Loans';
 import Payments from '@/js/components/Payments';
+import Loan from '@/js/components/Loan';
 import Login from '@/js/pages/LoginPage';
 import View from '@/js/views/View';
 
@@ -43,6 +44,12 @@ const router = new VueRouter({
                     path: '/payments',
                     name: 'payments',
                     component: Payments
+                },
+                {
+                    path: '/loans/:id',
+                    name: 'loan',
+                    component: Loan,
+                    props: true
                 },
             ]
         },

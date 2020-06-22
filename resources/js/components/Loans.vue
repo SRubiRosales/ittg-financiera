@@ -4,6 +4,7 @@
     loading-text="Cargando datos..."
     :headers="headers"
     :items="loans"
+    :search="search"
     sort-by="id"
     class="elevation-1"
   >
@@ -22,27 +23,6 @@
           ></v-text-field>
         </v-card-title>
         <v-card class="d-flex flex-row-reverse mx-auto">
-            
-                <v-dialog
-                v-model="dialog"
-                scrollable fullscreen 
-                persistent :overlay="false"
-                max-width="500px"
-                transition="dialog-transition"
-            ><template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    right
-                    color="teal darken-3"
-                    class="mb-1 white--text"
-                    fab
-                    v-bind="attrs"
-                    v-on="on"
-                    >
-                    <v-icon dark>mdi-file-excel</v-icon>
-                    </v-btn>
-            </template>
-            </v-dialog>
-            
           <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -51,8 +31,7 @@
               class="mb-1 white--text"
               fab
               v-bind="attrs"
-              v-on="on"
-              >
+              v-on="on">
               <v-icon dark>mdi-account-cash</v-icon>
             </v-btn>
           </template>
@@ -60,7 +39,6 @@
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
             </v-card-title>
-
             <v-card-text>
               <v-container>
                 <v-row>
@@ -104,14 +82,6 @@
                         prepend-icon="mdi-currency-usd"
                         required></v-text-field>
                     </v-col>
-                    <!--<v-col class="d-flex" cols="12" sm="6">
-                        <v-text-field
-                        color="teal"
-                        outlined
-                        v-model="editedItem.ministering_date"
-                        label="Fecha de ministración"
-                        prepend-icon="mdi-calendar-month"></v-text-field>
-                    </v-col>-->
                 </v-row>
               </v-container>
             </v-card-text>
@@ -122,20 +92,21 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        
         </v-card>
       </v-card>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-      <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+        <router-link :to="{name: 'loan', params: {id: item.id}}">
+            <v-icon small class="mr-2">mdi-eye</v-icon>
+        </router-link>
+      <v-icon v-if="item.finished == false" small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+      <v-icon v-if="item.finished == true" small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="teal" @click="initialize">Reset</v-btn>
+      <v-btn color="teal" @click="initialize">Refrescar</v-btn>
     </template>
   </v-data-table>
 </template>
-
 
 <script>
   export default {
@@ -193,10 +164,6 @@
     },
 
     methods: {
-      /*paginate(e){
-        axios.get('/api/loans?page')
-      },*/
-
       initialize () {
         axios.interceptors.request.use((config) => {
           this.loading = true;
@@ -252,11 +219,8 @@
               'amount': this.editedItem.amount,
               'payments_n': this.editedItem.payments_n,
               'quota': this.editedItem.quota,
-              //'total': this.editedItem.total,
-              //'ministering_date': this.editedItem.ministering_date
               })
-              .then(
-                res => Object.assign(this.loans[this.editedIndex], res.data.loan))
+              .then(res => Object.assign(this.loans[this.editedIndex], res.data.loan),)
               .catch(err => console.log(err.response))
           } else {
             axios.post('/api/loans', {
@@ -264,10 +228,11 @@
               'amount': this.editedItem.amount,
               'payments_n': this.editedItem.payments_n,
               'quota': this.editedItem.quota,
-              })
-              .then(res => this.loans.push(res.data.loan))
-              .catch(err => console.dir(err.response))
-            }
+            })
+            .then(res => this.loans.push(res.data.loan))
+            .catch(err => console.dir(err.response))
+            this.initialize()
+          }
         this.close()
       },
     },

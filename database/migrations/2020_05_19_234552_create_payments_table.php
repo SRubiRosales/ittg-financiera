@@ -20,7 +20,7 @@ class CreatePaymentsTable extends Migration
             $table->integer('payment_number');
             $table->decimal('amount', 8, 2);
             $table->date('date_payment');
-            $table->decimal('received_amount', 8, 2);
+            $table->decimal('received_amount', 8, 2)->nullable();
             $table->timestamps();
 
             $table->foreign('loan_id')
